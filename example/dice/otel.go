@@ -21,7 +21,9 @@ import (
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/stdout/stdoutmetric"
-	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+	// "go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	// "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -99,8 +101,10 @@ func newPropagator() propagation.TextMapPropagator {
 }
 
 func newTraceProvider(res *resource.Resource) (*trace.TracerProvider, error) {
-	traceExporter, err := stdouttrace.New(
-		stdouttrace.WithPrettyPrint())
+	// traceExporter, err := stdouttrace.New(
+	// 	stdouttrace.WithPrettyPrint())
+	traceExporter, err := otlptracegrpc.New(context.Background())
+	// traceExporter, err := otlptracehttp.New(context.Background())
 	if err != nil {
 		return nil, err
 	}
@@ -123,8 +127,8 @@ func newMeterProvider(res *resource.Resource) (*metric.MeterProvider, error) {
 	meterProvider := metric.NewMeterProvider(
 		metric.WithResource(res),
 		metric.WithReader(metric.NewPeriodicReader(metricExporter,
-			// Default is 1m. Set to 3s for demonstrative purposes.
-			metric.WithInterval(3*time.Second))),
+			// Default is 1m. Set to 1h for demonstrative purposes.
+			metric.WithInterval(time.Hour))),
 	)
 	return meterProvider, nil
 }

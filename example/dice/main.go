@@ -62,7 +62,7 @@ func run() (err error) {
 	go func() {
 		srvErr <- srv.ListenAndServe()
 	}()
-
+	log.Println("service has started.")
 	// Wait for interruption.
 	select {
 	case err = <-srvErr:
