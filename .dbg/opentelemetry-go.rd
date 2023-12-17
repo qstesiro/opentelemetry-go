@@ -16,6 +16,11 @@
         curl http://localhost:8080/rolldice
     }
 
+    # prometheus
+    {
+        go run .
+    }
+
     # jaeger
     {
         docker run \
